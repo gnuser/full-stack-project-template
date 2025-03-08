@@ -1,0 +1,11 @@
+---
+description: General Instructions
+globs: **/*.ts, **/*.tsx
+alwaysApply: false
+---
+# General Code Style and Usage
+omitSemicolons: true
+typescript:
+  preferInterfaces: true
+  avoidEnums: true
+  useMaps: true

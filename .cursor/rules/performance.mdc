@@ -1,0 +1,9 @@
+---
+description: Performance Instructions
+globs: **/*.tsx
+alwaysApply: false
+---
+
+# Performance
+optimizeWebVitals: [LCP, CLS, FID]
+preferServerComponents: true

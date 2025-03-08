@@ -1,0 +1,8 @@
+---
+description: Validation Instructions
+globs: schemas/**/*.ts
+alwaysApply: false
+---
+
+# Validation
+zod: true

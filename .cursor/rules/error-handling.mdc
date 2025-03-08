@@ -1,0 +1,9 @@
+---
+description: Error Handling Instructions
+globs: **/*.ts,**/*.tsx
+alwaysApply: false
+---
+# Error Handling
+errorBoundaries: true
+useCustomErrorTypes: true
+logErrors: consistent

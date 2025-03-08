@@ -1,0 +1,8 @@
+---
+description: Routing and Server Actions Instructions
+globs: pages/api/**/*.ts
+alwaysApply: false
+---
+# Routing and Server Actions
+nextSafeAction: true
+actionResponseType: '@types/actions/ActionResponse'

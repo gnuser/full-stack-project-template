@@ -1,0 +1,8 @@
+---
+description: State Management Instructions
+globs: store/**/*.ts
+alwaysApply: false
+---
+
+# State Management
+stateManagementLibraries: [Zustand, TanStack Query]

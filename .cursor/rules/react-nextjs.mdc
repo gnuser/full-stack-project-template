@@ -1,0 +1,16 @@
+---
+description: React and Next.js Instructions
+globs: pages/**/*.tsx,components/**/*.tsx
+alwaysApply: false
+---
+
+# React/Next.js Conventions
+reactNext:
+  useFunctionalComponents: true
+  preferDeclarativeJsx: true
+  functionKeywordForComponents: true
+  stylingLibraries: [Shadcn UI, Radix, Tailwind Aria]
+  responsiveDesign: mobileFirst
+  imageOptimization:
+    - format: WebP
+    - lazyLoading: true
