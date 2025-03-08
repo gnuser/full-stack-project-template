@@ -1,9 +1,18 @@
+import { NextRequest } from "next/server";
 import { authOptions } from "@/auth";
-import NextAuth from "next-auth";
+import NextAuth from "next-auth/next";
 
-// This is the recommended approach for handling dynamic route segments in App Router
-// https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
+// For App Router, we need to use a more explicit approach to handle dynamic routes
+// This follows Next.js 14+ recommendations and fixes the `Cannot destructure property 'nextauth'` errors
+
+// Create a handler with type information
 const handler = NextAuth(authOptions);
 
-// Export the handlers as named exports
-export { handler as GET, handler as POST };
+// Export the GET and POST handlers with proper typing
+export async function GET(request: NextRequest) {
+  return await handler(request);
+}
+
+export async function POST(request: NextRequest) {
+  return await handler(request);
+}

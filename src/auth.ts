@@ -9,6 +9,7 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { verifyPassword } from "@/lib/auth";
 
+// Optimize Redis connection and error handling
 // Create a type representing a minimal Redis-like interface
 interface RedisLike {
   set: (...args: any[]) => any;
@@ -21,7 +22,8 @@ let redis: RedisLike;
 let redisConnectionAttempts = 0;
 const MAX_REDIS_CONNECTION_ATTEMPTS = 3;
 
-// Function to initialize Redis client with retry logic
+// Function to initialize Redis client with retry logic - extracted to function
+// to avoid duplicate code and optimize connection management
 const initializeRedis = () => {
   try {
     redisConnectionAttempts++;
@@ -48,36 +50,32 @@ const initializeRedis = () => {
           console.log(
             `Attempting to reconnect to Redis (attempt ${redisConnectionAttempts} of ${MAX_REDIS_CONNECTION_ATTEMPTS})...`
           );
-          // Retry after a delay
-          setTimeout(initializeRedis, 2000);
+          setTimeout(initializeRedis, 2000); // Wait 2 seconds before retrying
         } else {
           console.error(
-            `Failed to connect to Redis after ${MAX_REDIS_CONNECTION_ATTEMPTS} attempts. Using mock implementation.`
+            `Failed to connect to Redis after ${MAX_REDIS_CONNECTION_ATTEMPTS} attempts.`
           );
-          // Fall back to mock implementation
-          redis = {
-            set: async () => true,
-            get: async () => null,
-            del: async () => true,
-          };
         }
       });
 
       client.on("connect", () => {
         console.log("Successfully connected to Redis");
+        redisConnectionAttempts = 0; // Reset the counter on successful connection
       });
 
       redis = client;
       console.log("Using local Redis with ioredis");
     } else {
-      // Fallback to a mock Redis implementation
-      console.log("No Redis configuration found, using mock implementation");
+      // If no Redis URL is provided, use a mock implementation
       redis = {
-        set: async () => true,
-        get: async () => null,
-        del: async () => true,
+        set: async (...args: any[]) => true,
+        get: async (...args: any[]) => null,
+        del: async (...args: any[]) => true,
       };
+      console.log("Using mock Redis implementation");
     }
+
+    return redis;
   } catch (error) {
     console.error("Error initializing Redis:", error);
 
@@ -86,70 +84,74 @@ const initializeRedis = () => {
       console.log(
         `Attempting to reconnect to Redis (attempt ${redisConnectionAttempts} of ${MAX_REDIS_CONNECTION_ATTEMPTS})...`
       );
-      // Retry after a delay
-      setTimeout(initializeRedis, 2000);
+      setTimeout(initializeRedis, 2000); // Wait 2 seconds before retrying
     } else {
       console.error(
-        `Failed to initialize Redis after ${MAX_REDIS_CONNECTION_ATTEMPTS} attempts. Using mock implementation.`
+        `Failed to connect to Redis after ${MAX_REDIS_CONNECTION_ATTEMPTS} attempts.`
       );
-      // Fall back to mock implementation
-      redis = {
-        set: async () => true,
-        get: async () => null,
-        del: async () => true,
-      };
     }
+
+    // Return a mock implementation in case of error
+    return {
+      set: async (...args: any[]) => true,
+      get: async (...args: any[]) => null,
+      del: async (...args: any[]) => true,
+    };
   }
 };
 
-// Initialize Redis
+// Initialize Redis connection
 initializeRedis();
 
+// Use a more strongly typed authOptions configuration
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
     GitHubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
+      clientId: process.env.GITHUB_CLIENT_ID || "",
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
     }),
     CredentialsProvider({
-      name: "Credentials",
+      id: "credentials",
+      name: "Email and Password",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-
         try {
-          // Find user by email
+          if (!credentials?.email || !credentials?.password) {
+            return null;
+          }
+
           const user = await prisma.user.findUnique({
             where: { email: credentials.email },
           });
 
-          // If no user or password doesn't match
           if (!user || !user.password) {
             return null;
           }
 
-          // Verify password
-          const isValid = verifyPassword(credentials.password, user.password);
+          const isValidPassword = await verifyPassword(
+            credentials.password,
+            user.password
+          );
 
-          if (!isValid) {
+          if (!isValidPassword) {
             return null;
           }
 
-          // Return user without password
+          // Return user without password for security
           const { password, ...userWithoutPassword } = user;
           return userWithoutPassword;
         } catch (error) {
@@ -218,6 +220,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
+    error: "/login?error=true",
     // Add more custom pages if needed
   },
 };

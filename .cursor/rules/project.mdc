@@ -1,0 +1,17 @@
+---
+description: Current project
+globs: **/*
+alwaysApply: false
+---
+
+We are using
+- ⚡ **Bun** - 3x faster than npm for package management and scripts
+- 🏗️ **Next.js 14** - App Router with React Server Components
+- 🔄 **tRPC v11** - End-to-end typesafe API
+- 🗃️ **Prisma** - Type-safe ORM with PostgreSQL
+- 🎨 **shadcn/ui** - Accessible and customizable component system
+- 🔍 **Biome** - 30x faster than ESLint for linting and formatting
+- 🔒 **Auth.js** - Authentication with Prisma adapter
+- 📊 **React Query v5** - Data fetching and caching
+- 🧪 **TypeScript Beta** - Latest language features
+- 🛠️ **Husky & lint-staged** - Automated code quality checks

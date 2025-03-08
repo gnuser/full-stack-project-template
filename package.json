@@ -10,7 +10,15 @@
     "prepare": "husky",
     "clear-auth": "node prisma/clear-auth-data.js",
     "clear-redis": "node prisma/clear-redis.js",
-    "clear-all": "npm run clear-auth && npm run clear-redis"
+    "clear-all": "npm run clear-auth && npm run clear-redis",
+    "setup": "bash setup.sh",
+    "create-feature": "node scripts/create-feature.js",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma migrate reset --force"
   },
   "dependencies": {
     "@auth/core": "^0.38.0",
@@ -46,5 +54,9 @@
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.0-beta"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md}": ["prettier --write"]
   }
 }

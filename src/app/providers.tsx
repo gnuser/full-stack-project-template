@@ -1,6 +1,7 @@
 "use client";
 
 import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       // Avoid flash of unauthenticated content
       refetchWhenOffline={false}
     >
-      {children}
+      <ThemeProvider defaultTheme="system">{children}</ThemeProvider>
     </SessionProvider>
   );
 }

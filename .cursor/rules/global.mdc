@@ -1,0 +1,5 @@
+---
+description: Global
+globs: **/*
+alwaysApply: false
+---
