@@ -12,7 +12,8 @@ export default function AuthButton() {
       <button
         type="button"
         disabled
-        className="rounded-md bg-gray-200 px-4 py-2 text-sm text-gray-700"
+        className="rounded-md px-4 py-2 text-sm opacity-70"
+        style={{ backgroundColor: "var(--border)" }}
       >
         Loading...
       </button>
@@ -27,7 +28,8 @@ export default function AuthButton() {
             <img
               src={session.user.image}
               alt={session.user.name || "Profile"}
-              className="h-8 w-8 rounded-full"
+              className="h-8 w-8 rounded-full border-2"
+              style={{ borderColor: "var(--primary)" }}
             />
           )}
           <span className="text-sm font-medium">
@@ -37,7 +39,17 @@ export default function AuthButton() {
         <button
           type="button"
           onClick={() => signOut()}
-          className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+          className="rounded-md px-4 py-2 text-sm font-medium text-white transition-colors"
+          style={{
+            backgroundColor: "var(--error)",
+            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
+          }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.filter = "brightness(90%)")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.filter = "brightness(100%)")
+          }
         >
           Sign out
         </button>
@@ -49,13 +61,34 @@ export default function AuthButton() {
     <div className="flex items-center gap-2">
       <Link
         href="/login"
-        className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+        className="rounded-md px-4 py-2 text-sm font-medium transition-colors"
+        style={{
+          backgroundColor: "transparent",
+          color: "var(--foreground)",
+          border: "1px solid var(--border)",
+        }}
+        onMouseOver={(e) =>
+          (e.currentTarget.style.backgroundColor = "rgba(0,0,0,0.05)")
+        }
+        onMouseOut={(e) =>
+          (e.currentTarget.style.backgroundColor = "transparent")
+        }
       >
         Sign in
       </Link>
       <Link
         href="/register"
-        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        className="rounded-md px-4 py-2 text-sm font-medium text-white transition-colors"
+        style={{
+          backgroundColor: "var(--primary)",
+          boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
+        }}
+        onMouseOver={(e) =>
+          (e.currentTarget.style.backgroundColor = "var(--primary-hover)")
+        }
+        onMouseOut={(e) =>
+          (e.currentTarget.style.backgroundColor = "var(--primary)")
+        }
       >
         Sign up
       </Link>
