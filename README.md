@@ -33,7 +33,7 @@ The easiest way to get started is by using the setup script:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/fullstack-template my-project
+git clone https://github.com/gnuser/fullstack-project-template my-project
 cd my-project
 
 # Run the setup script
@@ -55,10 +55,10 @@ If you prefer to set things up manually:
 
 ```bash
 # Using the GitHub CLI:
-gh repo create my-project --template https://github.com/yourusername/fullstack-template
+gh repo create my-project --template https://github.com/gnuser/fullstack-project-template
 
 # Or with git:
-git clone https://github.com/yourusername/fullstack-template my-project
+git clone https://github.com/gnuser/fullstack-project-template my-project
 cd my-project
 ```
 

@@ -64,15 +64,17 @@ export default function AuthButton() {
         className="rounded-md px-4 py-2 text-sm font-medium transition-colors"
         style={{
           backgroundColor: "transparent",
-          color: "var(--foreground)",
-          border: "1px solid var(--border)",
+          color: "white",
+          border: "1px solid rgba(255, 255, 255, 0.3)",
         }}
-        onMouseOver={(e) =>
-          (e.currentTarget.style.backgroundColor = "rgba(0,0,0,0.05)")
-        }
-        onMouseOut={(e) =>
-          (e.currentTarget.style.backgroundColor = "transparent")
-        }
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+          e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.5)";
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = "transparent";
+          e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
+        }}
       >
         Sign in
       </Link>
@@ -80,15 +82,12 @@ export default function AuthButton() {
         href="/register"
         className="rounded-md px-4 py-2 text-sm font-medium text-white transition-colors"
         style={{
-          backgroundColor: "var(--primary)",
+          backgroundColor: "#3b82f6",
+          color: "white",
           boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
         }}
-        onMouseOver={(e) =>
-          (e.currentTarget.style.backgroundColor = "var(--primary-hover)")
-        }
-        onMouseOut={(e) =>
-          (e.currentTarget.style.backgroundColor = "var(--primary)")
-        }
+        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
+        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#3b82f6")}
       >
         Sign up
       </Link>

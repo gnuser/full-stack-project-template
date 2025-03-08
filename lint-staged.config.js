@@ -5,5 +5,10 @@ module.exports = {
     // 'bun tsc --noEmit --skipLibCheck',
     'echo "Skipping TypeScript checks in pre-commit hook"',
   ],
-  "*.{json,md}": ["biome format --write"],
+  "*.{json,md}": [
+    (files) => {
+      const fileList = files.join(" ");
+      return `npx biome format --write ${fileList}`;
+    },
+  ],
 };
