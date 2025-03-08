@@ -1,11 +1,11 @@
-import { authOptions } from "@/auth";
-import { getServerSession } from "next-auth";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import RegisterForm from "./register-form";
 
 export default async function RegisterPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
 
+  // Redirect to home if already logged in
   if (session) {
     redirect("/");
   }

@@ -1,5 +1,7 @@
 "use client";
 
+import { Card, CardLabel } from "@/components/ui/card";
+
 type ProfileCardProps = {
   email: string | null | undefined;
   userId: string | undefined;
@@ -7,36 +9,16 @@ type ProfileCardProps = {
 
 export default function ProfileCard({ email, userId }: ProfileCardProps) {
   return (
-    <div
-      className="rounded-xl p-6 shadow-lg transition-all duration-200"
-      style={{
-        backgroundColor: "var(--card-bg)",
-        borderColor: "var(--border)",
-        borderWidth: "1px",
-        borderStyle: "solid",
-      }}
-    >
-      <h3 className="mb-4 text-xl font-medium">Your Profile</h3>
-
+    <Card title="Your Profile">
       <div className="mt-4 space-y-3">
         <div className="flex flex-col">
-          <span
-            className="text-sm"
-            style={{ color: "var(--foreground)", opacity: 0.6 }}
-          >
-            Email
-          </span>
+          <CardLabel>Email</CardLabel>
           <span className="font-medium">{email}</span>
         </div>
 
         {userId && (
           <div className="flex flex-col">
-            <span
-              className="text-sm"
-              style={{ color: "var(--foreground)", opacity: 0.6 }}
-            >
-              User ID
-            </span>
+            <CardLabel>User ID</CardLabel>
             <span
               className="font-mono text-sm"
               style={{ wordBreak: "break-all" }}
@@ -47,12 +29,7 @@ export default function ProfileCard({ email, userId }: ProfileCardProps) {
         )}
 
         <div className="flex flex-col">
-          <span
-            className="text-sm"
-            style={{ color: "var(--foreground)", opacity: 0.6 }}
-          >
-            Status
-          </span>
+          <CardLabel>Status</CardLabel>
           <div className="flex items-center gap-2">
             <div
               className="h-2.5 w-2.5 rounded-full"
@@ -62,6 +39,6 @@ export default function ProfileCard({ email, userId }: ProfileCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
