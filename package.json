@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "clear-auth": "node prisma/clear-auth-data.js",
+    "clear-redis": "node prisma/clear-redis.js",
+    "clear-all": "npm run clear-auth && npm run clear-redis"
   },
   "dependencies": {
     "@auth/core": "^0.38.0",
@@ -33,6 +36,7 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "biome": "^0.3.3",
+    "dotenv": "^16.4.7",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
     "husky": "^9.0.11",
@@ -40,6 +44,7 @@
     "prettier": "^3.5.3",
     "prisma": "^6.4.1",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.0-beta"
   }
 }
