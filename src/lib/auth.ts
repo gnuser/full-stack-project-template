@@ -1,8 +1,8 @@
-import { createHash } from "node:crypto";
+import bcrypt from "bcryptjs";
 
-// Hash password using SHA-256
+// Hash password using bcrypt (more secure than SHA-256)
 export function hashPassword(password: string): string {
-  return createHash("sha256").update(`${password}`).digest("hex");
+  return bcrypt.hashSync(password, 10); // 10 rounds of salting
 }
 
 // Compare password with stored hash
@@ -10,6 +10,5 @@ export function verifyPassword(
   password: string,
   hashedPassword: string
 ): boolean {
-  const inputHash = hashPassword(password);
-  return inputHash === hashedPassword;
+  return bcrypt.compareSync(password, hashedPassword);
 }

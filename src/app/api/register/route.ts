@@ -4,6 +4,17 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    // Check referer header for basic CSRF protection
+    const referer = req.headers.get("referer");
+
+    // Only allow requests from your own site
+    if (!referer || !referer.startsWith(process.env.NEXTAUTH_URL as string)) {
+      return NextResponse.json(
+        { message: "Invalid request origin" },
+        { status: 403 }
+      );
+    }
+
     const { name, email, password } = await req.json();
 
     // Simple validation

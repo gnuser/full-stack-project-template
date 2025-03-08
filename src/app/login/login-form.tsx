@@ -2,7 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginForm() {
@@ -11,6 +11,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const router = useRouter();
 
   const searchParams = useSearchParams();
 
@@ -36,6 +37,13 @@ export default function LoginForm() {
 
       if (result?.error) {
         setError("Invalid email or password");
+      } else if (result?.ok) {
+        // Show success message before redirect
+        setSuccess("Login successful! Redirecting...");
+        // Delay redirect slightly to show success message
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
       }
     } catch (_err) {
       setError("Something went wrong. Please try again.");
@@ -49,20 +57,36 @@ export default function LoginForm() {
       <div className="space-y-2">
         <button
           type="button"
-          onClick={() => signIn("google", { callbackUrl: "/" })}
+          onClick={async () => {
+            setIsLoading(true);
+            try {
+              await signIn("google", { callbackUrl: "/" });
+            } catch (err) {
+              setError("Failed to sign in with Google. Please try again.");
+              setIsLoading(false);
+            }
+          }}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50"
           disabled={isLoading}
         >
-          Sign in with Google
+          {isLoading ? "Signing in..." : "Sign in with Google"}
         </button>
 
         <button
           type="button"
-          onClick={() => signIn("github", { callbackUrl: "/" })}
+          onClick={async () => {
+            setIsLoading(true);
+            try {
+              await signIn("github", { callbackUrl: "/" });
+            } catch (err) {
+              setError("Failed to sign in with GitHub. Please try again.");
+              setIsLoading(false);
+            }
+          }}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-white shadow-sm hover:bg-gray-800"
           disabled={isLoading}
         >
-          Sign in with GitHub
+          {isLoading ? "Signing in..." : "Sign in with GitHub"}
         </button>
       </div>
 

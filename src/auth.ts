@@ -16,33 +16,94 @@ interface RedisLike {
   del: (...args: any[]) => any;
 }
 
-// Initialize Redis client
+// Initialize Redis client with retry mechanism
 let redis: RedisLike;
+let redisConnectionAttempts = 0;
+const MAX_REDIS_CONNECTION_ATTEMPTS = 3;
 
-// Check if we're using Upstash (production) or local Redis (development)
-if (
-  process.env.UPSTASH_REDIS_REST_URL &&
-  process.env.UPSTASH_REDIS_REST_TOKEN
-) {
-  // Use Upstash Redis client for production
-  redis = new UpstashRedis({
-    url: process.env.UPSTASH_REDIS_REST_URL,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN,
-  });
-  console.log("Using Upstash Redis");
-} else if (process.env.REDIS_URL) {
-  // Use ioredis for local development
-  redis = new Redis(process.env.REDIS_URL);
-  console.log("Using local Redis with ioredis");
-} else {
-  // Fallback to a mock Redis implementation
-  console.log("No Redis configuration found, using mock implementation");
-  redis = {
-    set: async () => true,
-    get: async () => null,
-    del: async () => true,
-  };
-}
+// Function to initialize Redis client with retry logic
+const initializeRedis = () => {
+  try {
+    redisConnectionAttempts++;
+
+    if (
+      process.env.UPSTASH_REDIS_REST_URL &&
+      process.env.UPSTASH_REDIS_REST_TOKEN
+    ) {
+      // Use Upstash Redis client for production
+      redis = new UpstashRedis({
+        url: process.env.UPSTASH_REDIS_REST_URL,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      });
+      console.log("Using Upstash Redis");
+    } else if (process.env.REDIS_URL) {
+      // Use ioredis for local development with event handlers
+      const client = new Redis(process.env.REDIS_URL);
+
+      client.on("error", (err) => {
+        console.error("Redis connection error:", err);
+
+        // If we haven't exceeded max attempts, try to reconnect
+        if (redisConnectionAttempts < MAX_REDIS_CONNECTION_ATTEMPTS) {
+          console.log(
+            `Attempting to reconnect to Redis (attempt ${redisConnectionAttempts} of ${MAX_REDIS_CONNECTION_ATTEMPTS})...`
+          );
+          // Retry after a delay
+          setTimeout(initializeRedis, 2000);
+        } else {
+          console.error(
+            `Failed to connect to Redis after ${MAX_REDIS_CONNECTION_ATTEMPTS} attempts. Using mock implementation.`
+          );
+          // Fall back to mock implementation
+          redis = {
+            set: async () => true,
+            get: async () => null,
+            del: async () => true,
+          };
+        }
+      });
+
+      client.on("connect", () => {
+        console.log("Successfully connected to Redis");
+      });
+
+      redis = client;
+      console.log("Using local Redis with ioredis");
+    } else {
+      // Fallback to a mock Redis implementation
+      console.log("No Redis configuration found, using mock implementation");
+      redis = {
+        set: async () => true,
+        get: async () => null,
+        del: async () => true,
+      };
+    }
+  } catch (error) {
+    console.error("Error initializing Redis:", error);
+
+    // If we haven't exceeded max attempts, try to reconnect
+    if (redisConnectionAttempts < MAX_REDIS_CONNECTION_ATTEMPTS) {
+      console.log(
+        `Attempting to reconnect to Redis (attempt ${redisConnectionAttempts} of ${MAX_REDIS_CONNECTION_ATTEMPTS})...`
+      );
+      // Retry after a delay
+      setTimeout(initializeRedis, 2000);
+    } else {
+      console.error(
+        `Failed to initialize Redis after ${MAX_REDIS_CONNECTION_ATTEMPTS} attempts. Using mock implementation.`
+      );
+      // Fall back to mock implementation
+      redis = {
+        set: async () => true,
+        get: async () => null,
+        del: async () => true,
+      };
+    }
+  }
+};
+
+// Initialize Redis
+initializeRedis();
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
