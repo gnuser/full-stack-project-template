@@ -34,8 +34,8 @@ export default function RegisterForm() {
 
       // If registration is successful, redirect to login page
       router.push("/login?registered=true");
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setIsLoading(false);
     }

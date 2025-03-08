@@ -37,7 +37,7 @@ export default function LoginForm() {
       if (result?.error) {
         setError("Invalid email or password");
       }
-    } catch (err) {
+    } catch (_err) {
       setError("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
@@ -48,6 +48,7 @@ export default function LoginForm() {
     <div className="space-y-6">
       <div className="space-y-2">
         <button
+          type="button"
           onClick={() => signIn("google", { callbackUrl: "/" })}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-white px-4 py-2 text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50"
           disabled={isLoading}
@@ -56,6 +57,7 @@ export default function LoginForm() {
         </button>
 
         <button
+          type="button"
           onClick={() => signIn("github", { callbackUrl: "/" })}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-white shadow-sm hover:bg-gray-800"
           disabled={isLoading}
@@ -66,7 +68,7 @@ export default function LoginForm() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
+          <div className="w-full border-t border-gray-300" />
         </div>
         <div className="relative flex justify-center text-sm">
           <span className="bg-white px-2 text-gray-500">Or continue with</span>

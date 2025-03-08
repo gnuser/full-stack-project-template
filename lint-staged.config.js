@@ -1,12 +1,8 @@
 module.exports = {
   "*.{ts,tsx}": [
-    // Temporarily disable strict checking to allow the commit
-    // 'biome check --apply',
-    // 'bun tsc',
-    'echo "Skipping TypeScript linting for now"',
+    // Skip Biome checks for now as they're causing issues
+    // 'biome check --write --log-level=error',
+    "bun tsc --noEmit --skipLibCheck",
   ],
-  "*.{json,md}": [
-    // 'biome format --write',
-    'echo "Skipping JSON/MD formatting for now"',
-  ],
+  "*.{json,md}": ["biome format --write"],
 };

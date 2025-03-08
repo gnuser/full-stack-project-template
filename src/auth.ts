@@ -10,7 +10,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { verifyPassword } from "@/lib/auth";
 
 // Initialize Redis client (either local or Upstash)
-let redis: any;
+// Using unknown type and runtime checks for proper type safety
+let redis: unknown;
 
 // Check if we're using Upstash (production) or local Redis (development)
 if (

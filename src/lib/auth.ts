@@ -1,4 +1,4 @@
-import { createHash } from "crypto";
+import { createHash } from "node:crypto";
 
 // Hash password using SHA-256
 export function hashPassword(password: string): string {

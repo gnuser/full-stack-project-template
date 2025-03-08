@@ -10,6 +10,7 @@ export default function AuthButton() {
   if (isLoading) {
     return (
       <button
+        type="button"
         disabled
         className="rounded-md bg-gray-200 px-4 py-2 text-sm text-gray-700"
       >
@@ -34,6 +35,7 @@ export default function AuthButton() {
           </span>
         </div>
         <button
+          type="button"
           onClick={() => signOut()}
           className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
         >
