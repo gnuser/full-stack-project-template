@@ -6,9 +6,10 @@ module.exports = {
     'echo "Skipping TypeScript checks in pre-commit hook"',
   ],
   "*.{json,md}": [
+    // Using a function so biome receives the actual file paths instead of a glob pattern
     (files) => {
-      const fileList = files.join(" ");
-      return `npx biome format --write ${fileList}`;
+      if (files.length === 0) return 'echo "No JSON or MD files to format"';
+      return `npx biome format ${files.join(" ")}`;
     },
   ],
 };
