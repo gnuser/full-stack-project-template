@@ -29,10 +29,13 @@ export default function LoginForm() {
     setSuccess("");
 
     try {
+      const callbackUrl = searchParams?.get("callbackUrl") || "/";
+
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
+        callbackUrl,
       });
 
       if (result?.error) {
@@ -40,9 +43,10 @@ export default function LoginForm() {
       } else if (result?.ok) {
         // Show success message before redirect
         setSuccess("Login successful! Redirecting...");
+
         // Delay redirect slightly to show success message
         setTimeout(() => {
-          router.push("/");
+          router.push(callbackUrl);
         }, 1000);
       }
     } catch (_err) {
@@ -60,7 +64,8 @@ export default function LoginForm() {
           onClick={async () => {
             setIsLoading(true);
             try {
-              await signIn("google", { callbackUrl: "/" });
+              const callbackUrl = searchParams?.get("callbackUrl") || "/";
+              await signIn("google", { callbackUrl });
             } catch (err) {
               setError("Failed to sign in with Google. Please try again.");
               setIsLoading(false);
@@ -77,7 +82,8 @@ export default function LoginForm() {
           onClick={async () => {
             setIsLoading(true);
             try {
-              await signIn("github", { callbackUrl: "/" });
+              const callbackUrl = searchParams?.get("callbackUrl") || "/";
+              await signIn("github", { callbackUrl });
             } catch (err) {
               setError("Failed to sign in with GitHub. Please try again.");
               setIsLoading(false);

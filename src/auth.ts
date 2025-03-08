@@ -108,7 +108,7 @@ initializeRedis();
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   providers: [
@@ -160,12 +160,19 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
-      // Add user data to session
+    async jwt({ token, user, account }) {
+      // Add user ID to the token when it's first created
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Add user data to session from token
       if (session.user) {
         session.user = {
           ...session.user,
-          id: user.id,
+          id: token.id as string,
         } as {
           name?: string | null | undefined;
           email?: string | null | undefined;
