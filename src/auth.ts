@@ -9,9 +9,15 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { verifyPassword } from "@/lib/auth";
 
-// Initialize Redis client (either local or Upstash)
-// Using unknown type and runtime checks for proper type safety
-let redis: unknown;
+// Create a type representing a minimal Redis-like interface
+interface RedisLike {
+  set: (...args: any[]) => any;
+  get: (...args: any[]) => any;
+  del: (...args: any[]) => any;
+}
+
+// Initialize Redis client
+let redis: RedisLike;
 
 // Check if we're using Upstash (production) or local Redis (development)
 if (
